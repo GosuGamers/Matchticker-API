@@ -1,0 +1,289 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: GosuGamers matchticker API
+  description: You can try all HTTP operation described in this Swagger spec.
+host: www.gosugamers.net
+basePath: /api
+schemes:
+  - http
+consumes:
+  - text/plain; charset=utf-8
+produces:
+  - text/html
+security:
+  - apiKey: []
+paths:
+  /matches:
+    get:
+      parameters:
+        - $ref: '#/parameters/Game'
+        - $ref: '#/parameters/MaxResults'
+        - $ref: '#/parameters/Offset'
+        - name: dateFrom
+          in: query
+          type: string
+          description: Return results newer than the specified date in the "DD-MM-YYYY" format
+        - name: dateTo
+          in: query
+          type: string
+          description: Return results newer than the specified date in the "DD-MM-YYYY" format
+      responses:
+        200:
+          description: List all matches
+          schema:
+            type: object
+            properties:
+              matches:
+                type: array
+                items:
+                  $ref: '#/definitions/Match'
+        403:
+          $ref: '#/responses/ErrorResponse'
+  /vods:
+    get:
+      parameters:
+        - $ref: '#/parameters/Game'
+        - $ref: '#/parameters/MaxResults'
+        - $ref: '#/parameters/Offset'
+      responses:
+        200:
+          description: List all VODs
+          schema:
+            type: object
+            properties:
+              vods:
+                type: array
+                items:
+                  $ref: '#/definitions/Vod'
+        403:
+          $ref: '#/responses/ErrorResponse'
+
+definitions:
+  Match:
+    properties:
+      id:
+        type: number
+        description: ID if the match
+      status:
+        type: string
+        description: Status of the match
+        enum:
+          - isUpcoming
+          - isLive
+          - isPast
+      isLive:
+        type: boolean
+        description: Is the match live
+      datetime:
+        type: string
+        format: date
+        description: Start date of the match
+      game:
+        $ref: '#/definitions/Game'
+      pageUrl:
+        type: string
+        description: URL of the match
+      tournament:
+        $ref: '#/definitions/Tournament'
+      description:
+        type: string
+        description: Additional match information
+      gosubet:
+        $ref: '#/definitions/Bet'
+      itembet:
+        $ref: '#/definitions/Bet'
+      mapSelectionMethod:
+        type: string
+        description: The map selection method if applicable
+      maps:
+        type: array
+        description: A list of game maps if applicable
+        items:
+          $ref: '#/definitions/Map'
+      startingMap:
+        type: string
+        description: The name of the starting map if applicable
+      streams:
+        type: array
+        description: A list of game streams if applicable
+        items:
+          $ref: '#/definitions/Stream'
+      vods:
+        type: array
+        description: A list of VODs if applicable
+        items:
+          $ref: '#/definitions/Vod'
+      result:
+        $ref: '#/definitions/Result'
+      firstOpponent:
+        description: Details about the first opponent
+        $ref: '#/definitions/Opponent'
+      secondOpponent:
+        description: Details about the second opponent
+        $ref: '#/definitions/Opponent'
+  Vod:
+    type: object
+    description: VOD details
+    properties:
+      id:
+        type: number
+        description: ID of the VOD
+      pageUrl:
+        type: string
+        description: URL of the VOD
+      gameNumber:
+        type: number
+        description: The game or round number the VOD corresponds to in relation to the match
+      platform:
+        type: string
+        description: Platform on which the VOD is hosted
+  Game:
+    type: object
+    description: Game details
+    properties:
+      name:
+        type: string
+        description: Name of the game
+      tag:
+        type: string
+        description: Short name or abbreviation of the game
+  Tournament:
+    type: object
+    description: Tournament details
+    properties:
+      name:
+        type: string
+        description: Name of the tournament
+      pageUrl:
+        type: string
+        description: URL of the tournament
+      type:
+        type: string
+        description: Type of the tournament
+      stage:
+        type: string
+        description: Name of the tournament stage if applicable
+  Bet:
+    type: object
+    description: Details about this bet type
+    properties:
+      enabled:
+        type: boolean
+        description: Is this type of betting allowed for this match
+  Map:
+    type: object
+    description: Map details
+    properties:
+      matchGame:
+        type: number
+        description: The game or round number the map corresponds to in relation to the match
+      map:
+        type: string
+        description: The name of the map
+  Stream:
+    type: object
+    description: Stream details
+    properties:
+      title:
+        type: string
+        description: Title of the stream
+      platform:
+        type: string
+        description: Platform on which the stream is hosted
+      language:
+        type: object
+        description: Information about the language of the stream
+        properties:
+          languageCode:
+            type: string
+            description: Two-letter language code
+      isLive:
+        type: boolean
+        description: Is the stream live
+      viewers:
+        type: number
+        description: Number of viewers currently watching the stream
+      pageUrl:
+        type: string
+        description: URL of the stream
+  Result:
+    type: object
+    description: Result details
+    properties:
+      result:
+        type: string
+        description: Result if applicable
+      winnerScore:
+        type: number
+        description: Score of the winning opponent if applicable
+      loserScore:
+        type: number
+        description: Score of the losing opponent if applicable
+      winner:
+        $ref: '#/definitions/Opponent'
+        description: Winner if applicable
+  Opponent:
+    type: object
+    description: Opponent details
+    properties:
+      name:
+        type: string
+        description: Name of the opponent
+      shortName:
+        type: string
+        description: Short name or tag of the opponent
+      country:
+        type: object
+        description: Country of origin
+        properties:
+          countryCode:
+            type: string
+            description: Two-letter country code
+      pageUrl:
+        type: string
+        description: URL of the opponent
+
+
+
+parameters:
+  Game:
+    name: game
+    in: query
+    description: Which game to return results for, leave empty for all
+    type: string
+    enum:
+      - counterstrike
+      - dota2
+      - heroesofthestorm
+      - hearthstone
+      - lol
+  Offset:
+    name: offset
+    in: query
+    description: Return results starting from
+    type: integer
+    default: 0
+    minimum: 0
+  MaxResults:
+    name: maxResults
+    in: query
+    description: Maximum number of results to be returned
+    type: integer
+    minimum: 1
+    maximum: 25
+    default: 25
+
+responses:
+  ErrorResponse:
+    description: Error message
+    schema:
+      title: Error
+      type: string
+
+
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    name: apiKey
+    in: query
