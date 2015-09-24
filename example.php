@@ -4,7 +4,7 @@
 include 'GosuGamers.php';
 
 // (Optional) Create an alias for the Game class from the GosuGamers namespace
-use \GosuGamers\Matchticker\Game as Game;
+use GosuGamers\Matchticker\Game;
 
 // Define your API key
 $apiKey = 'Your API key goes here';
