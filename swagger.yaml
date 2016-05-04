@@ -58,6 +58,36 @@ paths:
                   $ref: '#/definitions/Vod'
         403:
           $ref: '#/responses/ErrorResponse'
+  /rankings/get-regions:
+    get:
+      parameters:
+        - $ref: '#/parameters/Game'
+      responses:
+        200:
+          description: List of all game regions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GameRegion'
+        403:
+          $ref: '#/responses/ErrorResponse'
+  /rankings/get-rankings:
+    get:
+      parameters:
+        - $ref: '#/parameters/Game'
+        - $ref: '#/parameters/Region'
+        - $ref: '#/parameters/RankingsType'
+        - $ref: '#/parameters/MaxResults'
+        - $ref: '#/parameters/Offset'
+      responses:
+        200:
+          description: List of all rankings
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Ranking'
+        403:
+          $ref: '#/responses/ErrorResponse'
 
 definitions:
   Match:
@@ -243,6 +273,44 @@ definitions:
       pageUrl:
         type: string
         description: URL of the opponent
+  GameRegion:
+    type: object
+    description: Game region
+    properties:
+      name:
+        type: string
+        description: Name of the game region
+      parameter_name:
+        type: string
+        description: Game region identifier
+  Ranking:
+    type: object
+    description: Team ranking information
+    properties:
+      name:
+        type: string
+        description: Team or player name
+      rank:
+        type: integer
+        description: Current global ranking
+      previous_rank:
+        type: integer
+        description: Previous global ranking
+      region_ranking:
+        type: integer
+        description: (optional) Ranking position in the specified region
+      elo_rating:
+        type: integer
+        description: ELO ranking
+      url:
+        type: string
+        description: Url to the team or player profile
+      country:
+        type: string
+        description: Country of origin
+      region:
+        type: string
+        description: (optional) Selected region for team
 
 
 
@@ -275,6 +343,19 @@ parameters:
     minimum: 1
     maximum: 25
     default: 25
+  Region:
+    name: region
+    in: query
+    description: Return results for the specified region
+    type: string
+  RankingsType:
+    name: type
+    in: query
+    description: Whether to return team or player rankings
+    type: string
+    enum:
+      - team
+      - player
 
 responses:
   ErrorResponse:
