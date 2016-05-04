@@ -258,6 +258,8 @@ parameters:
       - heroesofthestorm
       - hearthstone
       - lol
+      - overwatch
+      - starcraft2
   Offset:
     name: offset
     in: query
