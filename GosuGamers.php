@@ -162,6 +162,8 @@ class Game {
     const HEARTHSTONE      = 'hearthstone';
     const HEROESOFTHESTORM = 'heroesofthestorm';
     const LOL              = 'lol';
+    const OVERWATCH        = 'overwatch';
+    const STARCRAFT        = 'starcraft2';
 
     /**
      * Lists all supported games by the API
@@ -174,6 +176,8 @@ class Game {
             self::HEARTHSTONE       => self::getName(self::HEARTHSTONE),
             self::HEROESOFTHESTORM  => self::getName(self::HEROESOFTHESTORM),
             self::LOL               => self::getName(self::LOL),
+            self::OVERWATCH         => self::getName(self::OVERWATCH),
+            self::STARCRAFT         => self::getName(self::STARCRAFT),
         );
     }
 
@@ -199,6 +203,12 @@ class Game {
 
             case self::LOL:
                 return 'League of Legends';
+
+            case self::OVERWATCH:
+                return 'Overwatch';
+
+            case self::STARCRAFT:
+                return 'StarCraft II';
 
             default:
                 throw new \Exception('Unsupported game.');
